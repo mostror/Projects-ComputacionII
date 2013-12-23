@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <regex.h>
+#include <assert.h>
+#include <string.h>
+
+int parse (char *buf, char *address)
+{
+	//Checkeo los parametros
+	if (buf == NULL)
+	{
+		printf ("No hay datos para parsear");
+		return 0;
+	}
+
+	if (address == NULL)
+		address = malloc (sizeof(char)*17);
+
+	//Declaracion de Variables
+	regex_t pattern; //Variable necesaria para el uso de expresiones regulares
+
+	char *str = NULL; //Guarda las substrings de buff
+	char *buffer=malloc(sizeof(char)*strlen(buf));
+
+	//Asignacion de memoria e inicialiazacion
+	str = malloc(sizeof(char) * 100);
+
+	strcpy(buffer,buf);
+	
+	//Comprobar asignacion de memoria
+	assert(str != NULL);
+
+	if (regcomp(&pattern, "DST=(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)", REG_NOSUB | REG_EXTENDED))
+
+	{
+		write (STDERR_FILENO, "Ocurrio un error al armar la expresion regular\n", 48);
+		return -1;
+	}
+
+	//Loop dividiendo el string y buscando IPs
+	for (str = strtok_r(buffer, " ",&buffer); str != NULL; str = strtok_r(NULL, " ", &buffer))
+	{
+		printf("palabra: %s\n",str);
+		if (!regexec(&pattern, str, 0, NULL, 0))
+		{
+			strcpy (address,str+4);
+			return 1;
+		}
+		else printf("cadena fallo: %s\n",str);
+	}
+	
+	//Libero memoria
+	free(str);
+
+	//Devuelvo la cantidad de IPs
+	return 0;
+}
+
+
+int main (int argc, const char *argv[])
+{
+	int ips;
+	char *adress = malloc(40);
+	char *cadena=malloc(300);
+	strcpy(cadena,"Apr 10 06:53:00 BIG_FIREWALL kernel: [472295.008695] FW:TCP: IN=eth0 OUT=  SRC=191.28.199.187 DST=74.125.115.147 LEN=48 TOS=0x00 PREC=0x00 TTL=125 ID=26223 DF PROTO=TCP SPT=1728 DPT=443 WINDOW=65535 RES=0x00 SYN URGP=0 OPT (020405B401010402)\n");
+
+	//sprintf(cadena,"%d",strlen(cadena));
+
+	ips = parse(cadena,adress);
+
+	//printf("cadena: %s\n\nips encontradas:%d\n",cadena,ips);
+
+	//write(STDIN_FILENO,cadena,strlen(cadena));
+
+		if (ips>0) printf("cadena ganadora: %s\n",adress);
+		else printf (":(\n");
+
+	return 0;
+}
+

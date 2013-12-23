@@ -1,0 +1,13 @@
+crea la cola de mensajes
+termina
+
+recibe la cola
+hace la memcompartida
+tira inic
+abre archivo, edita, cierra, hasta que se acaba la cola
+espera que terminen los hijos
+termina.
+
+cola de mensajes: /lequeue
+memoria compartida: /lemap
+semaforo: /lesem

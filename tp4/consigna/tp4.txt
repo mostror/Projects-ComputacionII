@@ -1,0 +1,62 @@
+COMPUTACION II
+==============
+
+
+TP4: Memoria compartida y cola de mensajes
+------------------------------------------
+
+- Fecha de la primer revisión:  1/11/2011
+- Fecha de entrega final:       8/11/2011
+
+
+Objetivos:
+~~~~~~~~~~
+
+* Utilizar semáforos para sincronizar el acceso a recursos compartidos.
+* Utilizar memoria compartida y cola de mensajes para la comunicación entre procesos.
+
+
+Enunciado:
+~~~~~~~~~~
+
+Realizar una aplicación que, mediante filtros digitales, modifique una imagen .ppm cargada en memoria compartida. Los 
+filtros serán provistos por la Cátedra. El filtro digital seleccionado, será aplicado a la imagen por 3 procesos,
+uno por cada color (RGB).
+
+Un proceso analizará los argumentos pasados por línea de comandos y colocará el nombre del archivo y otros datos en una
+cola de mensajes. El proceso principal estará esperando datos en dicha la cola. Cuando los tenga, sacará el nombre de la imagen a modificar, y
+cargará la imagen en memoria compartida. Luego creará un proceso por cada color (3 procesos hijos). Cada hijo deberá aplicar el filtro seleccionado
+a para su color. El proceso padre esperará por medio de un semáforo a que los hijos terminen para escribir la imagen de resultado en disco.
+
+
+Requisitos de la implementación:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* La aplicación debe estar compuesta como mínimo por 3 módulos (3 archivos .h y 3 .c incluyendo el main). No cuentan
+los módulos provistos por los profesores.
+
+* No se corregirá el trabajo que no tenga su Makefile correspondiente.
+
+
+Todo lo que no está especificado en este enunciado queda a consideración de los alumnos.
+
+Modo de uso:
+---------------------------------------------
+$ ./tp4-work &
+$ ./tp4-req -i <input> -o <output> -f <filtro>
+---------------------------------------------
+
+Ejemplo:
+--------------------------------------------
+$ ./tp4-work &
+$ ./tp4-req -i dog.ppm -o laplace.ppm -f laplace
+--------------------------------------------
+
+
+Tips:
+~~~~~
+
+- Si cada proceso tiene su propio espacio de memoria, ¿como harían para utilizar el mismo semáforo creado por el padre y
+no una copia del mismo?
+
+
